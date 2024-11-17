@@ -4,6 +4,7 @@ import { Text, View, TouchableOpacity } from 'react-native';
 const Menu = ({ navigation }) => { 
     return (
         <View>
+            
             <TouchableOpacity
                 onPress={() => navigation.navigate('Login')} 
             >
