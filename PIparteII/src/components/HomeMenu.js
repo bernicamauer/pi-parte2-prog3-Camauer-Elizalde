@@ -1,8 +1,8 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomePage from '../screens/HomePage';
 import Profile from '../screens/Profile';
 import CrearPosteo from '../screens/CrearPosteo';
 import { FontAwesome } from '@expo/vector-icons';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Tab = createBottomTabNavigator();
 
@@ -30,7 +30,7 @@ const HomeMenu = () => {
                 component={CrearPosteo} 
                 options={{ 
                     headerShown: false, 
-                    tabBarIcon: ({ color, size }) => <FontAwesome name="user" size={size} color={color} /> 
+                    tabBarIcon: ({ color, size }) => <FontAwesome name="plus" size={size} color={color} /> 
                 }} 
             />
         </Tab.Navigator>
