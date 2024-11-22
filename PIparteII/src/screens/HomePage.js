@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList } from 'react-native-web';
 import { db } from "../firebase/Config"
 import Posts from"../components/Posts"
-import HomeMenu from '../components/HomeMenu';
 
 export default class HomePage extends Component {
   constructor(props) {

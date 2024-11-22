@@ -22,7 +22,7 @@ export default class CrearPosteo extends Component {
       email: auth.currentUser.email,
       descripcion:descpost,
       createdAt: Date.now(),
-      likes: ""
+      likes: []
 
     })
     .then(this.props.navigation.navigate("HomePage"))

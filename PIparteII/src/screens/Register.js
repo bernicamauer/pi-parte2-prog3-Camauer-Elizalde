@@ -16,8 +16,7 @@ class Register extends Component {
   }
 
   
-  
-  
+
   handleSubmit() {
     auth
       .createUserWithEmailAndPassword(this.state.email, this.state.password)

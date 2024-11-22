@@ -6,6 +6,7 @@ import {
   TextInput
 } from "react-native";
 import { auth } from "../firebase/Config";
+import HomeMenu from "../components/HomeMenu";
 
 
 class Login extends Component {
