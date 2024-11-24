@@ -2,8 +2,8 @@ import HomePage from '../screens/HomePage';
 import Profile from '../screens/Profile';
 import CrearPosteo from '../screens/CrearPosteo';
 import Users from '../screens/Users';
+import { FontAwesome } from "@expo/vector-icons";
 
-import { FontAwesome } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Tab = createBottomTabNavigator();

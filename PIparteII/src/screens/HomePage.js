@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList } from 'react-native-web';
-import { db } from "../firebase/Config";
+import { Text, View, StyleSheet, FlatList,ActivityIndicator } from 'react-native-web';
+import { auth, db } from "../firebase/Config";
 import Posts from "../components/Posts";
 
 export default class HomePage extends Component {
@@ -8,32 +8,38 @@ export default class HomePage extends Component {
     super(props);
     this.state = {
       posts: [],
+      loading: true, 
     };
   }
 
   componentDidMount() {
-    db.collection("posts").onSnapshot((docs) => {
-      let arrDocs = [];
-      docs.forEach((doc) => {
-        arrDocs.push({
-          id: doc.id,
-          data: doc.data(),
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        this.props.navigation.navigate("Login"); 
+      } else {
+        db.collection("posts").onSnapshot((docs) => {
+          let arrDocs = [];
+          docs.forEach((doc) => {
+            arrDocs.push({
+              id: doc.id,
+              data: doc.data(),
+            });
+          });
+          this.setState({ posts: arrDocs, loading: false });
         });
-      });
-      this.setState(
-        {
-          posts: arrDocs,
-        },
-        () =>
-          console.log(
-            "Posteos en el home: ",
-            JSON.stringify(this.state.posts, null, 4)
-          )
-      );
+      }
     });
   }
 
   render() {
+    if (this.state.loading) {
+      return (
+        <View style={styles.container}>
+          <ActivityIndicator size='large' color='green' /> 
+        </View>
+      );
+    }
+
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Home</Text>
@@ -73,8 +79,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
   },
+ 
   postList: {
     width: "100%",
   },
 });
-
