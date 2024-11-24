@@ -1,89 +1,100 @@
-import React, { Component } from 'react';
-import { Text, View, FlatList, TouchableOpacity } from 'react-native';
-import { auth, db } from '../firebase/Config';
+import React, { Component } from "react";
+import {
+    Text,
+    View,
+    TextInput,
+    FlatList,
+    StyleSheet,
+} from "react-native";
+import { db } from "../firebase/Config";
 
-class Profile extends Component {
+class SearchForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            userEmail: '',
-            userName: '',
-            posts: [],
-            login: false,
-            error: ""
+            users: [],
+            usuariosFiltrados: [],
+            userName: "",
         };
     }
 
     componentDidMount() {
-        const user = auth.currentUser;
-
-        if (user) {
-
-            this.setState({
-                userEmail: user.email,
-            });
-
-
-            db.collection('users').onSnapshot(
-                docs => {
-                docs.forEach((doc) => {
-                    if (doc.data().email === user.email) {
-                        this.setState({ userName: doc.data().userName });
-                    }
+        db.collection("users").onSnapshot((docs) => {
+            let allUsers = [];
+            docs.forEach((doc) => {
+                allUsers.push({
+                    id: doc.id,
+                    data: doc.data(),
                 });
             });
-
-
-            db.collection('posts').onSnapshot(docs => {
-                let userPosts = [];
-                docs.forEach((doc) => {
-                    if (doc.data().email === user.email) {
-                        userPosts.push({
-                            id: doc.id,
-                            data: doc.data(),
-                        });
-                    }
-                });
-                this.setState({ posts: userPosts });
-            });
-        }
+            this.setState({ users: allUsers, usuariosFiltrados: allUsers });
+        });
     }
 
-    handleLogout = () => {
-        auth
-            .signOut()
-            .then(() => {
-                this.props.navigation.navigate('Login');
-            })
-            .catch((error) => this.setState({ error: error.message }));
-    };
+    handleFilter(e) {
+        const value = e.target.value;
+        this.setState({
+            userName: value,
+            usuariosFiltrados: this.state.users.filter((user) => user.data.userName.toLowerCase().includes(value.toLowerCase())
+            ),
+        });
+    }
 
     render() {
-
-
         return (
-            <View>
-                <Text>Mi Perfil</Text>
-                <Text>Nombre de usuario: {this.state.userName}</Text>
-                <Text>Correo del usuario: {this.state.userEmail}</Text>
-                <Text>Total de posteos: {this.state.posts.length}</Text>
-
-
-                <FlatList
-                    data={this.state.posts}
-                    keyExtractor={item => item.id.toString()}
-                    renderItem={({ item }) => <View>
-                        <Text>{item.text}</Text>
-                    </View>}
+            <View style={styles.container}>
+                <Text style={styles.title}>Buscar Usuarios</Text>
+                <TextInput
+                    style={styles.input}
+                    keyboardType="default"
+                    placeholder="Ingrese el nombre de usuario"
+                    onChangeText={(text) => this.handleFilter(text)}
+                    value={this.state.userName}
                 />
 
-                <TouchableOpacity onPress={this.handleLogout} >
-                    <Text >Cerrar sesión</Text>
-                </TouchableOpacity>
+                {this.state.usuariosFiltrados.length > 0 ? (
+                    <FlatList
+                        data={this.state.usuariosFiltrados}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => (
+                            <Text style={styles.userItem}>{item.data.userName}</Text>
+                        )}
+                    />
+                ) : (
+                    <Text style={styles.error}>
+                        {this.state.userName ? "El usuario no existe" : "Ingrese un nombre de usuario para buscar"}
+                    </Text>
+                )}
             </View>
-
         );
     }
 }
 
-export default Profile;
+const styles = StyleSheet.create({
+    container: {
+        padding: 20,
+    },
+    title: {
+        fontSize: 20,
+        fontWeight: "bold",
+        marginBottom: 10,
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: "#ccc",
+        padding: 10,
+        borderRadius: 5,
+        marginBottom: 15,
+    },
+    userItem: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: "#ddd",
+    },
+    error: {
+        color: "red",
+        marginTop: 10,
+    },
+});
+
+export default SearchForm;

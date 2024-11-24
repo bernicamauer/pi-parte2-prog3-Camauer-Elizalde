@@ -17,6 +17,8 @@ export default function App() {
                 <Stack.Screen name="Register" component={Register} options={{ headerShown: false }}/>
                 <Stack.Screen name="HomeMenu" component={HomeMenu} options={{ headerShown: false }} /> 
                 <Stack.Screen name="HomePage" component={HomePage} options={{ headerShown: false }} /> 
+            
+
 
 
             </Stack.Navigator>
