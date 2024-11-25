@@ -17,7 +17,10 @@ export default class HomePage extends Component {
       if (!user) {
         this.props.navigation.navigate("Login"); 
       } else {
-        db.collection("posts").onSnapshot((docs) => {
+        db.collection("posts")
+        .orderBy("createdAt", "desc")
+        .onSnapshot((docs) => {
+
           let arrDocs = [];
           docs.forEach((doc) => {
             arrDocs.push({

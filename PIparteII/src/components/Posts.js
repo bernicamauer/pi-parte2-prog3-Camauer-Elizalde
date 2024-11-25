@@ -43,6 +43,7 @@ class Post extends Component {
   dislike() {
     db.collection("posts")
       .doc(this.props.postInfo.id)
+      
       .update({
         likes: firebase.firestore.FieldValue.arrayRemove(auth.currentUser.email),
       })

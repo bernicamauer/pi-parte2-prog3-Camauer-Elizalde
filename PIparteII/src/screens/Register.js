@@ -9,10 +9,10 @@ class Register extends Component {
       email: "",
       password: "",
       userName: "",
-      registered: false,
       error: "",
     };
   }
+
   componentDidMount() {
     auth.onAuthStateChanged((user) => {
       if (user) {
@@ -22,18 +22,66 @@ class Register extends Component {
   }
 
   handleSubmit() {
-    auth
-      .createUserWithEmailAndPassword(this.state.email, this.state.password)
-      .then(() => {
-        this.setState({ registered: true });
-        db.collection("users").add({
-          email: this.state.email,
-          userName: this.state.userName,
-          createdAt: Date.now(),
+    const { email, password, userName } = this.state;
+    let hasError = false;
+    let errorMessage = "";
+
+    if (!email) {
+      hasError = true;
+      errorMessage = "El campo de email es obligatorio.";
+    }
+
+    if (!password) {
+      hasError = true;
+      errorMessage = "El campo de contraseña es obligatorio.";
+    }
+
+    if (!userName) {
+      hasError = true;
+      errorMessage = "El campo de nombre de usuario es obligatorio.";
+    }
+
+    if (!hasError) {
+      if (!email.includes("@")) {
+        hasError = true;
+        errorMessage = "El email debe contener un '@'.";
+      } else if (!email.includes(".")) {
+        hasError = true;
+        errorMessage = "El email debe contener un punto '.'.";
+      }
+    }
+
+    if (!hasError && password.length < 6) {
+      hasError = true;
+      errorMessage = "La contraseña debe tener al menos 6 caracteres.";
+    }
+
+    if (hasError) {
+      this.setState({ error: errorMessage });
+    } else {
+      auth
+        .createUserWithEmailAndPassword(email, password)
+        .then(() => {
+          db.collection("users").add({
+            email: this.state.email,
+            userName: this.state.userName,
+            createdAt: Date.now(),
+          });
+          this.setState({ error: "" });
+          this.props.navigation.navigate("Login");
+        })
+        .catch((error) => {
+          let firebaseError = "Fallo el registro.";
+          if (error.code === "auth/email-already-in-use") {
+            firebaseError = "El email ya está en uso.";
+          } else if (error.code === "auth/invalid-email") {
+            firebaseError = "El email no es válido.";
+          } else if (error.code === "auth/weak-password") {
+            firebaseError = "La contraseña es muy débil.";
+          }
+          this.setState({ error: firebaseError });
         });
-      })
-      .then(() => this.props.navigation.navigate("Login"))
-      .catch((error) => this.setState({ error: "Fallo el registro" }));
+    }
   }
 
   render() {
@@ -93,7 +141,7 @@ class Register extends Component {
 const styles = {
   container: {
     flex: 1,
-    backgroundColor: "#F4F6F9", 
+    backgroundColor: "#F4F6F9",
     padding: 20,
     justifyContent: "center",
   },
@@ -101,31 +149,31 @@ const styles = {
     fontSize: 28,
     fontWeight: "bold",
     textAlign: "center",
-    color: "#333", 
+    color: "#333",
     marginBottom: 30,
   },
   input: {
     height: 50,
     borderWidth: 1,
     borderColor: "#ddd",
-    borderRadius: 25, 
+    borderRadius: 25,
     paddingLeft: 15,
     backgroundColor: "#fff",
     marginBottom: 15,
     fontSize: 16,
   },
   button: {
-    backgroundColor: "#5C6BC0", 
+    backgroundColor: "#5C6BC0",
     padding: 15,
-    borderRadius: 25, 
+    borderRadius: 25,
     alignItems: "center",
     marginBottom: 15,
   },
   buttonSecondary: {
-    backgroundColor: "#9E9E9E", 
+    backgroundColor: "#9E9E9E",
   },
   buttonDisabled: {
-    backgroundColor: "#BDBDBD", 
+    backgroundColor: "#BDBDBD",
   },
   buttonText: {
     color: "#fff",
@@ -135,7 +183,7 @@ const styles = {
   text: {
     textAlign: "center",
     fontSize: 16,
-    color: "#555", 
+    color: "#555",
     marginVertical: 10,
   },
   errorText: {
