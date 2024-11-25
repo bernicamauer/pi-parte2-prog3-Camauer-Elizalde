@@ -7,11 +7,11 @@ export default class CrearPosteo extends Component {
     super(props);
     this.state = {
       descpost: "",
-      urlImagen: "",
+      
     };
   }
 
-  crearPosteo(descpost, urlImagen) {
+  crearPosteo(descpost) {
     if (descpost === "") {
       return "No puedes crear un posteo vacío";
     }
@@ -22,7 +22,7 @@ export default class CrearPosteo extends Component {
         createdAt: Date.now(),
         likes: [],
       })
-      .then(this.props.navigation.navigate("HomePage"))
+      .then(this.props.navigation.navigate("Home"))
       .catch((err) => console.log(err));
   }
 
