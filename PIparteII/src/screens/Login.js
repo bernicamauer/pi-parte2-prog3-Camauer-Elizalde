@@ -85,7 +85,7 @@ class Login extends Component {
   }
 }
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
@@ -142,6 +142,6 @@ const styles = {
     fontSize: 16,
     color: "#555",
   },
-};
+});
 
 export default Login;

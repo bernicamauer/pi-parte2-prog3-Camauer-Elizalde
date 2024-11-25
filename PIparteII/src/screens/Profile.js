@@ -26,12 +26,12 @@ class Profile extends Component {
 
             db.collection('users').onSnapshot(
                 docs => {
-                docs.forEach((doc) => {
-                    if (doc.data().email === user.email) {
-                        this.setState({ userName: doc.data().userName });
-                    }
+                    docs.forEach((doc) => {
+                        if (doc.data().email === user.email) {
+                            this.setState({ userName: doc.data().userName });
+                        }
+                    });
                 });
-            });
 
 
             db.collection('posts').onSnapshot(docs => {

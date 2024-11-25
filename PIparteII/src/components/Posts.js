@@ -59,7 +59,7 @@ class Post extends Component {
         <Text style={styles.meta}>
           Cantidad de likes: {this.props.postInfo.data.likes.length}
         </Text>
-        <Text>Likeado por :{this.props.postInfo.data.likes} </Text>
+        <Text>Likeado por: {this.props.postInfo.data.likes} </Text>
         <Text style={styles.meta}>
           {new Date(this.props.postInfo.data.createdAt).toLocaleString()}
         </Text>
