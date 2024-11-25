@@ -19,6 +19,12 @@ class Post extends Component {
         liked: true,
       });
     }
+
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        this.props.navigation.navigate("HomeMenu"); 
+      }
+    });
   }
 
   like() {
@@ -47,6 +53,19 @@ class Post extends Component {
       });
   }
 
+  deletePost = () => {
+    db.collection("posts")
+    .doc(this.props.postInfo.id)
+    .delete()
+    .then(() => {
+      console.log("Post eliminado");
+    })
+    .catch((error) => {
+      console.log(error);
+      
+    })
+  }
+
   render() {
     return (
       <View style={styles.postContainer}>
@@ -59,7 +78,7 @@ class Post extends Component {
         <Text style={styles.meta}>
           Cantidad de likes: {this.props.postInfo.data.likes.length}
         </Text>
-        <Text>Likeado por: {this.props.postInfo.data.likes} </Text>
+        <Text>Likeado por: {this.props.postInfo.data.likes}  </Text>
         <Text style={styles.meta}>
           {new Date(this.props.postInfo.data.createdAt).toLocaleString()}
         </Text>
@@ -77,6 +96,12 @@ class Post extends Component {
             <FontAwesome name="heart-o" size={20} color="gray" />
           </TouchableOpacity>
         )}
+
+      {this.props.postInfo.data.email === auth.currentUser.email ? (
+          <TouchableOpacity onPress={() => this.deletePost()} style={styles.button}>
+            <Text style={styles.buttonText}>Eliminar Post</Text>
+          </TouchableOpacity>
+        ) : null}
       </View>
     );
   }

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { Text, View, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { auth, db } from '../firebase/Config';
+import Posts from "../components/Posts";
+
 
 class Profile extends Component {
     constructor(props) {
@@ -60,30 +62,72 @@ class Profile extends Component {
 
     render() {
 
-
         return (
-            <View>
-                <Text>Mi Perfil</Text>
-                <Text>Nombre de usuario: {this.state.userName}</Text>
-                <Text>Correo del usuario: {this.state.userEmail}</Text>
-                <Text>Total de posteos: {this.state.posts.length}</Text>
-
+            <View style={styles.container}>
+                <Text style={styles.title}>Mi Perfil</Text>
+                <Text style={styles.label}>Nombre de usuario: {this.state.userName}</Text>
+                <Text style={styles.label}>Correo del usuario: {this.state.userEmail}</Text>
+                <Text style={styles.label}>Total de posteos: {this.state.posts.length}</Text>
 
                 <FlatList
                     data={this.state.posts}
                     keyExtractor={item => item.id.toString()}
-                    renderItem={({ item }) => <View>
-                        <Text>{item.text}</Text>
-                    </View>}
+                    renderItem={({ item }) =>  <Posts postInfo={item} />
+                    }
                 />
 
-                <TouchableOpacity onPress={this.handleLogout} >
-                    <Text >Cerrar sesión</Text>
+                <TouchableOpacity onPress={this.handleLogout} style={[styles.button, styles.buttonPrimary]}>
+                    <Text style={styles.buttonText}>Cerrar sesión</Text>
                 </TouchableOpacity>
             </View>
-
         );
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#f0f0f0",
+        padding: 20,
+    },
+    title: {
+        fontSize: 26,
+        fontWeight: "bold",
+        color: "#333",
+        marginBottom: 20,
+        textAlign: "center",
+    },
+    label: {
+        fontSize: 16,
+        color: "#555",
+        marginBottom: 10,
+    },
+    postContainer: {
+        padding: 15,
+        backgroundColor: "#fff",
+        borderRadius: 8,
+        marginVertical: 10,
+        borderWidth: 1,
+        borderColor: "#ddd",
+    },
+    postText: {
+        fontSize: 16,
+        color: "#333",
+    },
+    button: {
+        padding: 15,
+        borderRadius: 8,
+        alignItems: "center",
+        marginVertical: 10,
+    },
+    buttonPrimary: {
+        backgroundColor: "#007BFF",
+    },
+    buttonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+});
 
 export default Profile;
